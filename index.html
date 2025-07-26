@@ -9,9 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -137,28 +135,54 @@
       padding: 20px;
       border-radius: 12px;
       font-size: 15px;
-      line-height: 1.6;
-      animation: typeIn 0.7s steps(20, end);
-      white-space: pre-line;
+      line-height: 1.5;
+      white-space: normal;
+      text-align: left;
+      animation: popIn 0.5s ease-out;
     }
 
-    @keyframes typeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
     ul {
-      margin: 10px 0 0 15px;
+      margin: 5px 0 10px 20px;
       padding: 0;
     }
 
     li {
       list-style: square;
-      margin-bottom: 5px;
+      margin-bottom: 3px;
     }
 
     .error { color: #ff6b6b; }
     .success { color: #38ef7d; }
+
+    #copyBtn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #00c6ff;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #fff;
+      font-size: 14px;
+      transition: 0.2s ease;
+    }
+
+    #copyBtn:hover {
+      background: #00aaff;
+      transform: scale(1.03);
+    }
+
+    #copyMsg {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #38ef7d;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -170,10 +194,12 @@
     <input type="text" id="ml_server" placeholder="Server ID ထည့်ပါ (e.g. 0000)" />
     <button id="checkBtn">စစ်ဆေးမည်</button>
     <div id="result"></div>
+    <button id="copyBtn" style="display:none;">📋 Copy Result</button>
+    <div id="copyMsg">✅ Copied to clipboard!</div>
   </div>
 
   <script>
-    const clickSound = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_b38b4d4c27.mp3");
+    const clickSound = new Audio("clicksound.mp3");
     document.getElementById("checkBtn").onclick = () => {
       clickSound.play();
       checkMLID();
@@ -183,6 +209,11 @@
       const id = document.getElementById("ml_id").value.trim();
       const server = document.getElementById("ml_server").value.trim();
       const resultDiv = document.getElementById("result");
+      const copyBtn = document.getElementById("copyBtn");
+      const copyMsg = document.getElementById("copyMsg");
+
+      copyBtn.style.display = "none";
+      copyMsg.style.display = "none";
 
       if (!id || !server) {
         resultDiv.innerHTML = "<p class='error'>⚠️ Please enter both ID and Server.</p>";
@@ -220,23 +251,37 @@
           <p><strong>ID:</strong> ${user.id}</p>
           <p><strong>Server:</strong> ${user.server}</p>
           <p><strong>Region:</strong> ${user.region || 'N/A'}</p>
-          <h4>💎 Shop Events</h4>
+          <h4 style="margin-top: 20px;">💎 Shop Events</h4>
           ${user.shop_events.map(event => `
-            <p><strong>${event.title}</strong></p>
-            <ul>
-              ${event.goods.map(good => `
-                <li>${good.title} - ${good.game_can_buy ? "🟢 ရပါသေးတယ်" : "🔴 မရတော့ပါ"}</li>
-              `).join("")}
-            </ul>
+            <div style="margin-bottom: 10px;">
+              <strong>${event.title}</strong>
+              <ul>
+                ${event.goods.map(good => `
+                  <li>${good.title} - ${good.game_can_buy ? "🟢 ရပါသေးတယ်" : "🔴 မရတော့ပါ"}</li>
+                `).join("")}
+              </ul>
+            </div>
           `).join("")}
         `;
+
+        copyBtn.style.display = "inline-block";
+
       } catch (error) {
         resultDiv.innerHTML = `<p class='error'>⚠️ Error: ${error.message}</p>`;
       }
     }
-  </script>
 
-  <footer style="margin-top:60px; padding:30px 20px; background:linear-gradient(135deg, #00c6ff, #0072ff); color:white; text-align:center; border-top-left-radius:20px; border-top-right-radius:20px; box-shadow:0 -8px 25px rgba(0,0,0,0.3); font-family:'Segoe UI', sans-serif; animation:glow 4s infinite alternate;">
+    // 📋 Copy Function
+    document.getElementById("copyBtn").onclick = () => {
+      const resultText = document.getElementById("result").innerText;
+      navigator.clipboard.writeText(resultText).then(() => {
+        const msg = document.getElementById("copyMsg");
+        msg.style.display = "block";
+        setTimeout(() => { msg.style.display = "none"; }, 2000);
+      });
+    };
+  </script>
+    <footer style="margin-top:60px; padding:30px 20px; background:linear-gradient(135deg, #00c6ff, #0072ff); color:white; text-align:center; border-top-left-radius:20px; border-top-right-radius:20px; box-shadow:0 -8px 25px rgba(0,0,0,0.3); font-family:'Segoe UI', sans-serif; animation:glow 4s infinite alternate;">
     <h3 style="margin-bottom:10px; font-size:22px; letter-spacing:0.5px;">📢 Connect With Us</h3>
     <div style="margin-top:20px; display:flex; justify-content:center; gap:30px; flex-wrap:wrap;">
       <a href="https://t.me/Magic_Mall_GameShop" target="_blank" title="Telegram Account" style="text-align:center; text-decoration:none;">
