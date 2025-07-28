@@ -414,5 +414,86 @@ window.addEventListener("load", () => {
     setTimeout(typeEffect, 500); // Delay before typing starts
   });
 </script>
+    <!-- ✅ Floating Draggable Telegram Button -->
+<div id="contactUsBtn" onclick="showContactPopup()" style="position:fixed; bottom:30px; right:30px; background:linear-gradient(to right, #0088cc, #00c6ff); padding:12px 16px; border-radius:50px; display:flex; align-items:center; gap:8px; color:#fff; font-weight:bold; font-size:14px; box-shadow:0 0 12px rgba(0,198,255,0.6); cursor:grab; z-index:10000; transition:top 0.15s ease, left 0.15s ease;">
+  <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg" alt="Telegram" style="width:20px; height:20px; filter:invert(1);">
+  Help
+</div>
+
+<!-- ✅ Contact Popup -->
+<div id="contactPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); justify-content:center; align-items:center; z-index:9999;">
+  <div id="popupBox" style="background:#1e2a38; padding:25px; border-radius:15px; max-width:350px; width:90%; text-align:center; color:white; box-shadow:0 0 20px #00c6ff; position:relative;">
+    <img src="logo.svg" alt="Logo" style="width:70px; height:70px; border-radius:12px; background:white; padding:5px; margin-bottom:15px;">
+    <h3>📞 Contact Support</h3>
+    <p> Error တစ်ခုခုဖြစ်ခဲ့ပါကTelegram မှတဆင့်ဆက်သွယ်နိုင်ပါတယ်။</p>
+    <a href="https://t.me/Magic_Mall_GameShop" target="_blank" style="display:inline-block; margin-top:15px; background:linear-gradient(to right,#0072ff,#00c6ff); color:white; padding:10px 20px; border-radius:10px; text-decoration:none; font-weight:bold;">📨 Message Us</a>
+  </div>
+</div>
+
+<!-- ✅ Script for Drag, Open, Auto-Close -->
+<script>
+  const btn = document.getElementById("contactUsBtn");
+  const popup = document.getElementById("contactPopup");
+  const popupBox = document.getElementById("popupBox");
+
+  // ✅ Show Popup
+  function showContactPopup() {
+    popup.style.display = "flex";
+  }
+
+  // ✅ Close if clicked outside the box
+  popup.addEventListener("click", function (e) {
+    if (!popupBox.contains(e.target)) {
+      popup.style.display = "none";
+    }
+  });
+
+  // ✅ Drag Logic
+  let isDragging = false, offsetX = 0, offsetY = 0;
+
+  // Desktop drag
+  btn.addEventListener("mousedown", function (e) {
+    isDragging = true;
+    offsetX = e.clientX - btn.getBoundingClientRect().left;
+    offsetY = e.clientY - btn.getBoundingClientRect().top;
+    btn.style.cursor = "grabbing";
+  });
+
+  document.addEventListener("mousemove", function (e) {
+    if (isDragging) {
+      btn.style.left = e.clientX - offsetX + "px";
+      btn.style.top = e.clientY - offsetY + "px";
+      btn.style.right = "auto";
+      btn.style.bottom = "auto";
+    }
+  });
+
+  document.addEventListener("mouseup", function () {
+    isDragging = false;
+    btn.style.cursor = "grab";
+  });
+
+  // Mobile drag
+  btn.addEventListener("touchstart", function (e) {
+    isDragging = true;
+    const touch = e.touches[0];
+    offsetX = touch.clientX - btn.getBoundingClientRect().left;
+    offsetY = touch.clientY - btn.getBoundingClientRect().top;
+  });
+
+  document.addEventListener("touchmove", function (e) {
+    if (isDragging) {
+      const touch = e.touches[0];
+      btn.style.left = touch.clientX - offsetX + "px";
+      btn.style.top = touch.clientY - offsetY + "px";
+      btn.style.right = "auto";
+      btn.style.bottom = "auto";
+    }
+  });
+
+  document.addEventListener("touchend", function () {
+    isDragging = false;
+  });
+</script>
 </body>
 </html>
